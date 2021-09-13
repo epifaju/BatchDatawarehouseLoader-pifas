@@ -3,10 +3,13 @@ package com.gkemayo;
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.gkemayo.batch.batchutils.BatchJobListener;
@@ -27,12 +32,20 @@ import com.gkemayo.batch.writer.BatchWriter;
 
 @SpringBootApplication
 @EnableBatchProcessing
+//@EnableScheduling
 public class BatchDatawarehouseLoaderApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BatchDatawarehouseLoaderApplication.class, args);
 	}
 
+	
+//	@Autowired
+//    JobLauncher jobLauncher;
+//     
+//    @Autowired
+//    Job job;
+    
 	@Value("${path.to.the.work.dir}")
 	private String workDirPath ;
 	
@@ -93,4 +106,14 @@ public class BatchDatawarehouseLoaderApplication {
 		return jobBuilderFactory.get("jobDatawarehouseLoader").repository(jobRepositoryObj()).incrementer(new RunIdIncrementer()).listener(batchJobListener())
 				.flow(batchStep()).end().build();
 	}
+	
+//	@Scheduled(cron = "0 */1 * * * ?")
+//    public void perform() throws Exception 
+//    {
+//        JobParameters params = new JobParametersBuilder()
+//                .addString("JobID", String.valueOf(System.currentTimeMillis()))
+//                .toJobParameters();
+//        jobLauncher.run(job, params);
+//    }
+
 }
